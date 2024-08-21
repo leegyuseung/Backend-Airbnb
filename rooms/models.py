@@ -25,4 +25,4 @@ class Amenity(CommonModel):
 
   """ Amenity Definition """
   name = models.CharField(max_length=150)
-  scription = models.CharField(max_length=150, null=True)
+  scription = models.CharField(max_length=150, null=True, blank=True)
