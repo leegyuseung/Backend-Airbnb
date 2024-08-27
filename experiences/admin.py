@@ -10,6 +10,10 @@ class ExperienceAdmin(admin.ModelAdmin):
     "end"
   )
 
+  list_filter = (
+    "category",
+  )
+
 @admin.register(Perk)
 class PerkAdmin(admin.ModelAdmin):
   list_display = (
