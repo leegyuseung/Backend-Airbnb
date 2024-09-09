@@ -1,5 +1,8 @@
 from django.urls import path
 from . import views
 urlpatterns = [
-    path("",views.say_hello)
+    path("",views.see_all_room),
+    path("<int:room_id>", views.see_one_room),
+    # path("<int:room_id>/<str:room_name>", views.see_one_room),
+    # path("<str:room_name>", views.see_one_room)
 ]
