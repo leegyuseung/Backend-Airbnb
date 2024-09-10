@@ -27,6 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+THIRD_PARTY_APPS = [
+  "rest_framework",
+]
 
 # Application definition
 CUSTOM_APPS =[    
@@ -51,7 +54,7 @@ SYSTEM_APPS = [
     'django.contrib.staticfiles',
 ]
 
-INSTALLED_APPS = SYSTEM_APPS + CUSTOM_APPS
+INSTALLED_APPS = SYSTEM_APPS + THIRD_PARTY_APPS + CUSTOM_APPS 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
