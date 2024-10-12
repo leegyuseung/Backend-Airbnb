@@ -6,6 +6,7 @@ from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_200_OK
 from .models import Amenity, Room
 from categories.models import Category
 from .serializers import AmenitySerializer, RoomListSerializer, RoomDetailSerializer
+from reviews.serializers import ReviewSerializer
 
 class Amenities(APIView):
 
@@ -119,3 +120,24 @@ class RoomDetail(APIView):
       raise NotAuthenticated
     if room.owner != request.user:
       raise PermissionDenied
+    
+class RoomReviews(APIView):
+  def get_object(self, pk):
+    try:
+      return Room.objects.get(pk=pk)
+    except Room.DoesNotExist:
+      raise NotFound
+
+  def get(self, request, pk):
+    try:
+      # page가 없으면 1페이지로 해주기 위함
+      page = request.query_params.get('page', 1)
+      page = int(page)
+    except ValueError:
+      page = 1
+    page_size = 3
+    start = (page - 1) * page_size
+    end = start + page_size
+    room = self.get_object(pk)
+    serializer = ReviewSerializer(room.reviews.all()[start:end],many=True)
+    return Response(serializer.data)
