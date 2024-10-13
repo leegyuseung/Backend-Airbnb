@@ -141,3 +141,8 @@ class RoomReviews(APIView):
     room = self.get_object(pk)
     serializer = ReviewSerializer(room.reviews.all()[start:end],many=True)
     return Response(serializer.data)
+  
+class RoomPhotos(APIView):
+
+  def post(self, reqeust, pk):
+    pass
