@@ -4,6 +4,8 @@ from users.serializers import TinyUserSerializer
 from categories.serializers import CategorySerializer
 from reviews.serializers import ReviewSerializer
 from medias.serializers import PhotoSerializer
+from wishlists.models import Wishlist
+
 class AmenitySerializer(serializers.ModelSerializer):
   class Meta:
     model = Amenity
@@ -20,6 +22,7 @@ class RoomDetailSerializer(serializers.ModelSerializer):
   
   rating = serializers.SerializerMethodField()
   is_owner = serializers.SerializerMethodField()
+  is_liked = serializers.SerializerMethodField()
   photos = PhotoSerializer(many=True, read_only=True)
 
   class Meta:
@@ -30,8 +33,13 @@ class RoomDetailSerializer(serializers.ModelSerializer):
      return room.rating()
 
   def get_is_owner(self,room):
-    request =  self.context['request']
+    request = self.context['request']
     return room.owner == request.user
+
+  def get_is_liked(self, room):
+    request = self.context['request']
+    # get대신 filter를 사용한 이유는 유저가 여러 개의 wishlist를 가지고 있을 수 있기 때문
+    return Wishlist.objects.filter(user=request.user, rooms__pk=room.pk).exists()
 
 
 class RoomListSerializer(serializers.ModelSerializer):
@@ -50,8 +58,8 @@ class RoomListSerializer(serializers.ModelSerializer):
       "price",
       "rating",
       "is_owner",
-      "photos"
-    )
+      "photos",
+     )
   
   def get_rating(self,room):
      return room.rating()
