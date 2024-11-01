@@ -1,14 +1,17 @@
 from django.db import transaction
+from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound, NotAuthenticated, ParseError, PermissionDenied
 from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_200_OK
+from rest_framework.permissions import IsAuthenticatedOrReadOnly #get이면 누구나 post,put,delete면 인증받은사람만 통과
 from .models import Amenity, Room
-from categories.models import Category
 from .serializers import AmenitySerializer, RoomListSerializer, RoomDetailSerializer
+from categories.models import Category
+from bookings.models import Booking
+from bookings.serializers import PublicBookingSerializer
 from reviews.serializers import ReviewSerializer
 from medias.serializers import PhotoSerializer
-from rest_framework.permissions import IsAuthenticatedOrReadOnly #get이면 누구나 post,put,delete면 인증받은사람만 통과
 
 class Amenities(APIView):
 
@@ -175,3 +178,24 @@ class RoomPhotos(APIView):
       return Response(serializer.data)
     else:
       return Response(serializer.errors)
+    
+class RoomBookings(APIView):
+
+  # get은 누구나 가능하지만 인증된 user만이 put post delete method를 사용
+  permission_classes = [IsAuthenticatedOrReadOnly]
+
+  def get_object(self, pk):
+    try:
+      return Room.objects.get(pk=pk)
+    except:
+      return NotFound
+    
+  def get(self, reqeust, pk):
+    room = self.get_object(pk)
+    now = timezone.localtime(timezone.now()).date()
+    bookings = Booking.objects.filter(
+      room=room, 
+      kind=Booking.BookingKindChoices.ROOM,
+      check_in__gt=now,)
+    serializer = PublicBookingSerializer(bookings, many=True)
+    return Response(serializer.data)
