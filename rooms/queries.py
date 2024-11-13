@@ -1,6 +1,11 @@
 from . import models
 
 def get_all_rooms():
+  # 1번
+  # if info.context.request.user.is_authenticated:
+  #   return models.Room.objects.all()
+  # else:
+  #   raise Exception('Not auth.')
   return models.Room.objects.all()
 
 
