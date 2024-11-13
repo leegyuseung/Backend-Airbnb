@@ -146,3 +146,5 @@ AUTH_USER_MODEL = 'users.User'
 MEDIA_ROOT = 'uploads'
 
 MEDIA_URL = 'user-uploads/'
+
+PAGE_SIZE = 3

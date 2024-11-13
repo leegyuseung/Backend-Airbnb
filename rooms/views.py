@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.utils import timezone
+from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound, NotAuthenticated, ParseError, PermissionDenied
@@ -140,7 +141,7 @@ class RoomReviews(APIView):
       page = int(page)
     except ValueError:
       page = 1
-    page_size = 3
+    page_size = settings.PAGE_SIZE
     start = (page - 1) * page_size
     end = start + page_size
     room = self.get_object(pk)
