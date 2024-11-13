@@ -1,10 +1,12 @@
+from django.conf import settings
 import strawberry
 import typing
-from strawberry import auto
 from . import models 
+from wishlists.models import Wishlist
 from users.types import UserType
 from reviews.types import ReviewType
-from django.conf import settings
+from strawberry import auto
+from strawberry.types import Info
 
 @strawberry.django.type(models.Room)
 class RoomType:
@@ -14,7 +16,7 @@ class RoomType:
   owner: 'UserType'
 
   @strawberry.field
-  def reviews(self,page:int) -> typing.List['ReviewType']:
+  def reviews(self,page:typing.Optional[int] = 1) -> typing.List['ReviewType']:
     page_size = settings.PAGE_SIZE
     start = (page - 1) * page_size
     end = start + page_size
@@ -23,3 +25,13 @@ class RoomType:
   @strawberry.field
   def rating(self) -> str:
     return self.rating()
+  
+  @strawberry.field
+  def is_owner(self, info:Info) -> bool: # Info type을 이용해야한다.
+    print(info.context.request.user)
+    return self.owner == info.context.request.user
+
+  @strawberry.field
+  def is_liked(self, info:Info) -> bool:
+    return Wishlist.objects.filter(user=info.context.request.user, rooms__pk=self).exists()
+
