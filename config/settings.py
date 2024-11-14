@@ -29,7 +29,8 @@ ALLOWED_HOSTS = []
 
 THIRD_PARTY_APPS = [
   "rest_framework",
-  "strawberry.django"
+  "rest_framework.authtoken",
+  "strawberry.django",
 ]
 
 # Application definition
@@ -151,7 +152,9 @@ PAGE_SIZE = 3
 
 REST_FRAMEWORK = {
   'DEFAULT_AUTHENTICATION_CLASSES': [
+    # 'rest_framework.authentication.BasicAuthentication' # 잘 사용하지 않는다 (modal)
     'rest_framework.authentication.SessionAuthentication', # 기본값
-    'config.authentication.TrustMeBroAuthentication'
+    'config.authentication.TrustMeBroAuthentication',
+    'rest_framework.authentication.TokenAuthentication'
   ] 
 }
