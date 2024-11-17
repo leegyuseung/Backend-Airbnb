@@ -155,6 +155,7 @@ REST_FRAMEWORK = {
     # 'rest_framework.authentication.BasicAuthentication' # 잘 사용하지 않는다 (modal)
     'rest_framework.authentication.SessionAuthentication', # 기본값
     'config.authentication.TrustMeBroAuthentication',
-    'rest_framework.authentication.TokenAuthentication'
+    'rest_framework.authentication.TokenAuthentication',
+    'config.authentication.JWTAuthentication',
   ] 
 }
