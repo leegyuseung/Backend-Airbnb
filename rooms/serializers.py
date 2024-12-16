@@ -38,8 +38,10 @@ class RoomDetailSerializer(serializers.ModelSerializer):
 
   def get_is_liked(self, room):
     request = self.context['request']
+    if request.user.is_authenticated:
     # get대신 filter를 사용한 이유는 유저가 여러 개의 wishlist를 가지고 있을 수 있기 때문
-    return Wishlist.objects.filter(user=request.user, rooms__pk=room.pk).exists()
+      return Wishlist.objects.filter(user=request.user, rooms__pk=room.pk).exists()
+    return False
 
 
 class RoomListSerializer(serializers.ModelSerializer):
