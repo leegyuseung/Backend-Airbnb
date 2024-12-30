@@ -8,6 +8,7 @@ from rest_framework.exceptions import ParseError,NotFound
 from users.models import User
 from . import serializers
 import jwt
+import requests
 
 class Me(APIView):
   # private url일거고, 내 프로필이랑 공개되지 않은 정보를 받아볼 예정
@@ -117,5 +118,12 @@ class GithubLogIn(APIView):
 
   def post(self, request):
     code = request.data.get("code")
-    print(code)
+    access_token = requests.post(f"https://github.com/login/oauth/access_token?code={code}&client_id=Ov23lieNcP741VySjXuD&client_secret={settings.GH_SECRET}",
+                                 headers={"Accept":"application/json"})
+    access_token = access_token.json().get("access_token")
+    user_data = requests.get("https://api.github.com/user", headers={
+      "Authorization": f"Bearer {access_token}",
+      "Accept":"application/json"
+    })
+    print(user_data.json())
     return Response()
