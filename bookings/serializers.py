@@ -30,12 +30,14 @@ class CreateRoomBookingSerializer(serializers.ModelSerializer):
     return value
 
   def validate(self, data):
+    room = self.context.get("room")
+
     if data['check_out'] < data['check_in']:
      raise serializers.ValidationError('Check in should be smaller than check out.')
 
     # 날짜가 겹치는 예약을 감지하지 못함
     # Booking.objects.filter(check_in__gte=data['check_in'],check_out__lte=data['check_out']).exists()
-    if Booking.objects.filter(check_in__lte=data['check_out'],check_out__gte=data['check_in']).exists():
+    if Booking.objects.filter(room=room, check_in__lte=data['check_out'],check_out__gte=data['check_in']).exists():
       raise serializers.ValidationError('Those (or some) of those dates are alrady token.')
 
     return data
