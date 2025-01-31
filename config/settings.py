@@ -14,6 +14,8 @@ from pathlib import Path
 import os
 import environ
 import dj_database_url
+from sentry_sdk.integrations.django import DjangoIntegration
+import sentry_sdk
 
 env = environ.Env()
 
@@ -35,7 +37,7 @@ CF_TOKEN = env('CF_TOKEN')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'RENDER' not in os.environ
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost",]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 
@@ -191,3 +193,12 @@ CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:3000"]
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:3000"]
+
+if not DEBUG:
+   sentry_sdk.init(
+      dsn="",
+      integrations=[DjangoIntegration()]
+   )
+
+   traces_sample_rate=1.0,
+   send_default_pii=True
